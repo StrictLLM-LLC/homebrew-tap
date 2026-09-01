@@ -1,0 +1,59 @@
+name: Update cask from StrictLLM releases
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [strictllm-release]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-strictllm-cask
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Test updater
+        run: node --test scripts/update-cask.test.mjs
+      - name: Read latest published release
+        id: update
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/StrictLLM-LLC/download/releases/latest > "$RUNNER_TEMP/strictllm-release.json"
+          node scripts/update-cask.mjs "$RUNNER_TEMP/strictllm-release.json"
+          if git diff --quiet -- Casks/strictllm.rb; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Register tap for validation
+        if: steps.update.outputs.changed == 'true'
+        run: |
+          mkdir -p "$(brew --repository)/Library/Taps/strictllm-llc"
+          ln -s "$GITHUB_WORKSPACE" "$(brew --repository)/Library/Taps/strictllm-llc/homebrew-tap"
+      - name: Validate updated cask
+        if: steps.update.outputs.changed == 'true'
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+        run: |
+          brew style strictllm-llc/tap/strictllm
+          brew audit --cask --online strictllm-llc/tap/strictllm
+      - name: Commit updated cask
+        if: steps.update.outputs.changed == 'true'
+        run: |
+          version="$(sed -n 's/^  version "\([^"]*\)"$/\1/p' Casks/strictllm.rb)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Casks/strictllm.rb
+          git commit -m "Update StrictLLM Chat to ${version}"
+          git push
