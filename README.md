@@ -8,6 +8,7 @@ It supports both Apple Silicon and Intel Macs.
 
 ```sh
 brew tap StrictLLM-LLC/tap
+brew trust --cask strictllm-llc/tap/strictllm
 brew install --cask strictllm
 ```
 
