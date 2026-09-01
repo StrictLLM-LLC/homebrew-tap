@@ -1,0 +1,23 @@
+name: Homebrew cask CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v6
+      - name: Tap checkout
+        run: |
+          mkdir -p "$(brew --repository)/Library/Taps/strictllm-llc"
+          ln -s "$GITHUB_WORKSPACE" "$(brew --repository)/Library/Taps/strictllm-llc/homebrew-tap"
+      - name: Style
+        run: brew style strictllm-llc/tap/strictllm
+      - name: Audit
+        run: brew audit --cask --online strictllm-llc/tap/strictllm
