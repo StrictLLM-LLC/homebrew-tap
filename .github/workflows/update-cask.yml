@@ -1,8 +1,6 @@
 name: Update cask from StrictLLM releases
 
 on:
-  schedule:
-    - cron: "23 * * * *"
   workflow_dispatch:
   repository_dispatch:
     types: [strictllm-release]
@@ -24,12 +22,21 @@ jobs:
           node-version: 24
       - name: Test updater
         run: node --test scripts/update-cask.test.mjs
-      - name: Read latest published release
+      - name: Read published release
         id: update
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.client_payload.tag }}
         run: |
-          gh api repos/StrictLLM-LLC/download/releases/latest > "$RUNNER_TEMP/strictllm-release.json"
+          if [ -n "$RELEASE_TAG" ]; then
+            if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "::error::Invalid release tag: $RELEASE_TAG"
+              exit 1
+            fi
+            gh api "repos/StrictLLM-LLC/download/releases/tags/$RELEASE_TAG" > "$RUNNER_TEMP/strictllm-release.json"
+          else
+            gh api repos/StrictLLM-LLC/download/releases/latest > "$RUNNER_TEMP/strictllm-release.json"
+          fi
           node scripts/update-cask.mjs "$RUNNER_TEMP/strictllm-release.json"
           if git diff --quiet -- Casks/strictllm.rb; then
             echo "changed=false" >> "$GITHUB_OUTPUT"

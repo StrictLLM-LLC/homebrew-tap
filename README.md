@@ -17,11 +17,11 @@ data, use `brew uninstall --zap --cask strictllm`.
 
 ## Release updates
 
-The `Update cask from StrictLLM releases` workflow checks the latest published
-release in `StrictLLM-LLC/download` every hour. When the version changes, it
-requires both macOS DMGs and their GitHub SHA-256 digests, updates the Apple
-Silicon and Intel cask entries, validates the result with Homebrew, and commits
-the bump to `main`.
+After a tagged StrictLLM deployment publishes all platform assets, its release
+workflow sends this tap a `repository_dispatch` event with type
+`strictllm-release` and the exact release tag. The tap requires both macOS DMGs
+and their GitHub SHA-256 digests, updates the Apple Silicon and Intel cask
+entries, validates the result with Homebrew, and commits the bump to `main`.
 
-The workflow can also be started manually or immediately through a
-`repository_dispatch` event with type `strictllm-release`.
+There is no polling schedule. The workflow can still be started manually as a
+recovery mechanism; manual runs use the latest published release.
