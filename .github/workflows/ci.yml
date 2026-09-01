@@ -29,4 +29,6 @@ jobs:
       - name: Style
         run: brew style strictllm-llc/tap/strictllm
       - name: Audit
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
         run: brew audit --cask --online strictllm-llc/tap/strictllm

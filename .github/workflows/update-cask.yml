@@ -51,6 +51,7 @@ jobs:
       - name: Validate updated cask
         if: steps.update.outputs.changed == 'true'
         env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
           HOMEBREW_NO_AUTO_UPDATE: 1
         run: |
           brew style strictllm-llc/tap/strictllm
