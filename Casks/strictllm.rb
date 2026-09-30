@@ -1,13 +1,13 @@
 cask "strictllm" do
-  version "2.1.6"
+  version "2.2.10"
 
   on_arm do
-    sha256 "3f7a9938db6f64a5757c0884798021f05e29d3cb1d65ee06f0a9f8b0efe54a47"
+    sha256 "0d17c1e213f146d590b9208ea7cf93e94620d916126266556a387d76b1f18e93"
 
     url "https://github.com/StrictLLM-LLC/download/releases/download/v#{version}/StrictLLM-#{version}-macos-arm64-StrictLLM.Chat-#{version}-arm64.dmg"
   end
   on_intel do
-    sha256 "25182e942090e17e3a8fb78277e8ccdfd33f7ac38fed98f06f6e121408c7ff6f"
+    sha256 "e0e68a80f6cb7061fadfd77c65d74f3592322d086a535b2806862198b50e4502"
 
     url "https://github.com/StrictLLM-LLC/download/releases/download/v#{version}/StrictLLM-#{version}-macos-x64-StrictLLM.Chat-#{version}.dmg"
   end
