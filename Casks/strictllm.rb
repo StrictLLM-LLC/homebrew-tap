@@ -4,14 +4,12 @@ cask "strictllm" do
   on_arm do
     sha256 "3f7a9938db6f64a5757c0884798021f05e29d3cb1d65ee06f0a9f8b0efe54a47"
 
-    url "https://github.com/StrictLLM-LLC/download/releases/download/v#{version}/StrictLLM-#{version}-macos-arm64-StrictLLM.Chat-#{version}-arm64.dmg",
-        verified: "github.com/StrictLLM-LLC/download/"
+    url "https://github.com/StrictLLM-LLC/download/releases/download/v#{version}/StrictLLM-#{version}-macos-arm64-StrictLLM.Chat-#{version}-arm64.dmg"
   end
   on_intel do
     sha256 "25182e942090e17e3a8fb78277e8ccdfd33f7ac38fed98f06f6e121408c7ff6f"
 
-    url "https://github.com/StrictLLM-LLC/download/releases/download/v#{version}/StrictLLM-#{version}-macos-x64-StrictLLM.Chat-#{version}.dmg",
-        verified: "github.com/StrictLLM-LLC/download/"
+    url "https://github.com/StrictLLM-LLC/download/releases/download/v#{version}/StrictLLM-#{version}-macos-x64-StrictLLM.Chat-#{version}.dmg"
   end
 
   name "StrictLLM Chat"
@@ -23,7 +21,7 @@ cask "strictllm" do
     strategy :github_latest
   end
 
-  depends_on macos: :monterey
+  depends_on macos: :ventura
 
   app "StrictLLM Chat.app"
 
